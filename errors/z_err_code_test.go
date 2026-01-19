@@ -20,7 +20,9 @@ func TestErrCode(t *testing.T) {
 func TestNewCodeErrWithMsg(t *testing.T) {
 	err1 := errors.NewCodeErrWithMsg(testcodepb.TestErrCodeDbConn, "hello world")
 	var err2 *errors.ErrCode
-	t.Log(errors.As(err1, &err2))
+	if !errors.As(err1, &err2) {
+		t.Fatal("errors.As should have returned true")
+	}
 	if err2.Error() != "Hello World" {
 		t.Fatal("message not match")
 	}

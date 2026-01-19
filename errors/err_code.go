@@ -41,14 +41,15 @@ func NewCodeErrWithMap(code *errorpb.ErrCode, details ...map[string]any) error {
 	return NewCodeErr(code, data)
 }
 
+var titleCaser = cases.Title(language.English)
+
 func NewCodeErrWithMsg(code *errorpb.ErrCode, msg string, details ...proto.Message) error {
 	code = cloneAndCheck(code)
 	if code == nil {
 		return nil
 	}
 
-	caser := cases.Title(language.English)
-	code.Message = caser.String(strings.TrimSpace(msg))
+	code.Message = titleCaser.String(strings.TrimSpace(msg))
 	return NewCodeErr(code, details...)
 }
 
