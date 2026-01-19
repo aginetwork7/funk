@@ -12,6 +12,8 @@ import (
 	"github.com/pubgo/funk/proto/errorpb"
 	"github.com/pubgo/funk/stack"
 	"github.com/samber/lo"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -39,13 +41,15 @@ func NewCodeErrWithMap(code *errorpb.ErrCode, details ...map[string]any) error {
 	return NewCodeErr(code, data)
 }
 
+var titleCaser = cases.Title(language.English)
+
 func NewCodeErrWithMsg(code *errorpb.ErrCode, msg string, details ...proto.Message) error {
 	code = cloneAndCheck(code)
 	if code == nil {
 		return nil
 	}
 
-	code.Message = strings.ToTitle(strings.TrimSpace(msg))
+	code.Message = titleCaser.String(strings.TrimSpace(msg))
 	return NewCodeErr(code, details...)
 }
 
