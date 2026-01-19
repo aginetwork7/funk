@@ -12,6 +12,8 @@ import (
 	"github.com/pubgo/funk/proto/errorpb"
 	"github.com/pubgo/funk/stack"
 	"github.com/samber/lo"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -45,7 +47,8 @@ func NewCodeErrWithMsg(code *errorpb.ErrCode, msg string, details ...proto.Messa
 		return nil
 	}
 
-	code.Message = strings.ToTitle(strings.TrimSpace(msg))
+	caser := cases.Title(language.English)
+	code.Message = caser.String(strings.TrimSpace(msg))
 	return NewCodeErr(code, details...)
 }
 

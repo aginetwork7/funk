@@ -16,3 +16,13 @@ func TestErrCode(t *testing.T) {
 
 	t.Log(errors.As(err1, testcodepb.TestErrCodeDbConn))
 }
+
+func TestNewCodeErrWithMsg(t *testing.T) {
+	err1 := errors.NewCodeErrWithMsg(testcodepb.TestErrCodeDbConn, "hello world")
+	var err2 *errors.ErrCode
+	t.Log(errors.As(err1, &err2))
+	if err2.Error() != "Hello World" {
+		t.Fatal("message not match")
+	}
+	t.Log(err2.Error())
+}
