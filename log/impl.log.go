@@ -231,9 +231,9 @@ func (l *loggerImpl) newEvent(ctx context.Context, e *zerolog.Event) *zerolog.Ev
 	span := trace.SpanFromContext(e.GetCtx())
 	spanCtx := span.SpanContext()
 	if spanCtx.IsValid() {
-		e.Any(spanIDKey, spanCtx.SpanID())
-		e.Any(traceIDKey, spanCtx.TraceID())
-		e.Any(traceFlagsKey, spanCtx.TraceFlags())
+		e.Str(spanIDKey, spanCtx.SpanID().String())
+		e.Str(traceIDKey, spanCtx.TraceID().String())
+		e.Str(traceFlagsKey, spanCtx.TraceFlags().String())
 	}
 
 	return mergeEvent(e, getEventFromCtx(ctx), l.content)
