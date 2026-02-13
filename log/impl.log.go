@@ -8,7 +8,14 @@ import (
 	"github.com/pubgo/funk/errors"
 	"github.com/pubgo/funk/stack"
 	"github.com/rs/zerolog"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/protobuf/encoding/prototext"
+)
+
+const (
+	traceIDKey    = "trace_id"
+	spanIDKey     = "span_id"
+	traceFlagsKey = "trace_flags"
 )
 
 var _ Logger = (*loggerImpl)(nil)
@@ -142,7 +149,7 @@ func (l *loggerImpl) Err(err error, ctxL ...context.Context) *zerolog.Event {
 		return nil
 	}
 
-	var fn = func(e *zerolog.Event) {
+	fn := func(e *zerolog.Event) {
 		if id := errors.GetErrorId(err); id != "" {
 			e.Str("error_id", id)
 		}
@@ -219,6 +226,14 @@ func (l *loggerImpl) newEvent(ctx context.Context, e *zerolog.Event) *zerolog.Ev
 	if ctx != nil {
 		ctx = createFieldCtx(ctx, l.fields)
 		e = e.Ctx(ctx)
+
+		span := trace.SpanFromContext(ctx)
+		spanCtx := span.SpanContext()
+		if spanCtx.IsValid() {
+			e.Any(spanIDKey, spanCtx.SpanID())
+			e.Any(traceIDKey, spanCtx.TraceID())
+			e.Any(traceFlagsKey, spanCtx.TraceFlags())
+		}
 	}
 
 	return mergeEvent(e, getEventFromCtx(ctx), l.content)
