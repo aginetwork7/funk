@@ -49,6 +49,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.2
 	go.etcd.io/bbolt v1.3.7
 	go.etcd.io/etcd/client/v3 v3.5.9
+	go.opentelemetry.io/otel/trace v1.26.0
 	go.uber.org/atomic v1.10.0
 	golang.org/x/crypto v0.24.0
 	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
@@ -142,7 +143,6 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
 	go.opentelemetry.io/otel v1.26.0 // indirect
 	go.opentelemetry.io/otel/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/trace v1.26.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
