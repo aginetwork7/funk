@@ -219,21 +219,21 @@ func (l *loggerImpl) newEvent(ctx context.Context, e *zerolog.Event) *zerolog.Ev
 		e = e.CallerSkipFrame(l.callerSkip)
 	}
 
-	if l.fields != nil && len(l.fields) > 0 {
+	if len(l.fields) > 0 {
 		e = e.Fields(l.fields)
 	}
 
 	if ctx != nil {
 		ctx = createFieldCtx(ctx, l.fields)
 		e = e.Ctx(ctx)
+	}
 
-		span := trace.SpanFromContext(ctx)
-		spanCtx := span.SpanContext()
-		if spanCtx.IsValid() {
-			e.Any(spanIDKey, spanCtx.SpanID())
-			e.Any(traceIDKey, spanCtx.TraceID())
-			e.Any(traceFlagsKey, spanCtx.TraceFlags())
-		}
+	span := trace.SpanFromContext(e.GetCtx())
+	spanCtx := span.SpanContext()
+	if spanCtx.IsValid() {
+		e.Any(spanIDKey, spanCtx.SpanID())
+		e.Any(traceIDKey, spanCtx.TraceID())
+		e.Any(traceFlagsKey, spanCtx.TraceFlags())
 	}
 
 	return mergeEvent(e, getEventFromCtx(ctx), l.content)
